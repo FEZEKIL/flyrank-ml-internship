@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Model Skill: Honest vs Over-optimistic AUC</text>
+<text x="178" y="196.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Random Split</text>
+<rect x="190" y="70.0" width="563.6" height="195.0" fill="#6F4E7C" rx="4"/>
+<text x="761.6" y="196.8" font-family="Arial" font-size="13" fill="#27343b">0.772</text>
+<text x="178" y="401.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Grouped Client Split</text>
+<rect x="190" y="275.0" width="444.6" height="195.0" fill="#6F4E7C" rx="4"/>
+<text x="642.6" y="401.8" font-family="Arial" font-size="13" fill="#27343b">0.609</text>
+</svg>

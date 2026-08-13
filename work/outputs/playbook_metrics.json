@@ -1,0 +1,7 @@
+{
+  "honest_roc_auc": 0.609,
+  "random_roc_auc": 0.772,
+  "memorization_gap": 0.163,
+  "n_clients_train": 25,
+  "n_clients_test": 7
+}
