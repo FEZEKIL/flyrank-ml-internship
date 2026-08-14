@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Refresh Prioritization using Machine Learning | Research Paper</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #6F4E7C;
+            --text: #333;
+            --bg: #f4f7f6;
+            --paper: #fff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--paper);
+            padding: 60px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--bg);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+        h1 {
+            color: var(--primary);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .author {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .meta {
+            font-size: 0.9em;
+            color: #888;
+        }
+        .abstract {
+            background: #f9f9f9;
+            padding: 25px;
+            border-left: 5px solid var(--secondary);
+            margin: 30px 0;
+            font-style: italic;
+        }
+        h2 {
+            color: var(--primary);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary);
+        }
+        .figure {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .figure-caption {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+        .recommendations {
+            background-color: #e8f4fd;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #d1e9fa;
+        }
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+        }
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Content Refresh Prioritization using Machine Learning</h1>
+            <div class="author">Fezekile Xalaba</div>
+            <div class="meta">Machine Learning Track · Week 8 · Capstone Project</div>
+        </header>
+
+        <div class="abstract">
+            <strong>Abstract:</strong> This research investigates whether content-level signals—specifically age, search visibility, and ranking position—can directionalize the prioritization of content refreshes. Using a pseudonymized warehouse of 79 million daily search performance records, we developed a Random Forest model to identify pages at risk of organic traffic decay. While a standard random validation design suggests high accuracy (ROC-AUC 0.772), a more rigorous client-grouped split reveals a significant drop in generalization skill (ROC-AUC 0.609), indicating that site-specific technical signatures drive a large portion of apparent performance. We conclude that machine learning serves as an effective decision-support tool for ranking human content reviews rather than an autonomous scheduling agent.
+        </div>
+
+        <h2>1. Introduction</h2>
+        <p><strong>Research Question:</strong> Can we predict future organic traffic decline using trailing content metrics to prioritize manual content refreshes?</p>
+        <p>Content marketing teams currently rely on simple time-based rules (e.g., "refresh every 6 months"). This study aims to replace these static rules with a dynamic, data-driven ranking that identifies pages with high search presence that are showing signs of decay, ensuring limited editorial resources are applied where they have the most impact.</p>
+
+        <h2>2. Data</h2>
+        <p><strong>Dataset:</strong> FlyRank Internship Warehouse Release (Build v20260703).</p>
+        <p><strong>Scale:</strong> ~79 million rows of daily performance records covering ~70 pseudonymized clients and ~520,000 content items.</p>
+        <p><strong>Time Windows:</strong> The study utilized February 2026 as the feature aggregation window and March 2026 as the outcome evaluation window.</p>
+        <p><strong>Exclusions:</strong> We excluded pages with fewer than 5 clicks in the baseline month to ensure stability in the percentage-based decline label. We also excluded new content created during the evaluation window to avoid new-content bias.</p>
+
+        <h2>3. Methodology</h2>
+        <p><strong>Model:</strong> Random Forest Classifier (100 estimators, depth 10).</p>
+        <p><strong>Label Definition:</strong> A binary flag indicating March clicks were less than 80% of February clicks (>20% decline).</p>
+        <p><strong>Baseline:</strong> A transparent rule-based score: <code>(days_since_last_update >= 180) * impressions_90d</code>.</p>
+        <p><strong>Features:</strong> The model utilized log-transformed impressions, clicks, and sessions; average position; content age; word count; and categorical indicators for content type and search intent.</p>
+        <p><strong>Validation Design:</strong> Grouped Client Split (20% holdout). By holding out entire sites, we prevent the model from memorizing site-specific technical characteristics that don't generalize to new domains.</p>
+
+        <h2>4. Results</h2>
+        <p>The model demonstrates directional skill in identifying decay risk but highlights the critical importance of validation design.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Validation Design</th>
+                    <th>Metric</th>
+                    <th>Baseline Score</th>
+                    <th>Model Score</th>
+                    <th>Lift</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Random Split</td>
+                    <td>ROC-AUC</td>
+                    <td>0.500</td>
+                    <td>0.772</td>
+                    <td>+54%</td>
+                </tr>
+                <tr>
+                    <td><strong>Grouped Client Split</strong></td>
+                    <td><strong>ROC-AUC</strong></td>
+                    <td><strong>0.500</strong></td>
+                    <td><strong>0.609</strong></td>
+                    <td><strong>+22%</strong></td>
+                </tr>
+                <tr>
+                    <td>Precision @ Top 50</td>
+                    <td>Precision</td>
+                    <td>0.700</td>
+                    <td>0.560</td>
+                    <td>-20%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="figure">
+            <img src="figures/model_skill_comparison.svg" alt="Model Skill: Honest vs Over-optimistic AUC">
+            <div class="figure-caption">Figure 1: Comparison of ROC-AUC performance between Random and Grouped validation designs.</div>
+        </div>
+
+        <p>The 0.163 AUC gap between random and grouped splits reveals significant 'memorization' of client-specific signatures. Furthermore, while the model generalizes well across the whole dataset (higher AUC), the manual baseline remains more effective at identifying the most obvious high-volume refresh candidates (higher Precision@50).</p>
+
+        <h2>5. Limitations</h2>
+        <ul>
+            <li><strong>Survivorship Bias:</strong> The model only evaluates content that has lived long enough to accumulate search history. It cannot score the refresh opportunity for brand-new pages during their first ~30-60 days.</li>
+            <li><strong>Intent Blindness:</strong> The dataset contains high-level intent categories but lacks semantic depth. A page might 'decline' because the search intent for its keyword has shifted fundamentally.</li>
+            <li><strong>Seasonality:</strong> Monthly windows are sensitive to calendar effects (e.g., February vs. March length) which may be misclassified as content decay.</li>
+        </ul>
+
+        <h2>6. Ranked Recommendations</h2>
+        <div class="recommendations">
+            <p>We recommend a <strong>Prioritized Content Review Queue</strong> using the following criteria:</p>
+            <ul>
+                <li><strong>STALE_CONTENT:</strong> Priority review for pages not updated in >180 days.</li>
+                <li><strong>STRIKING_DISTANCE:</strong> Focus on pages ranked 4-10 with significant impression volume.</li>
+                <li><strong>LOW_CTR_HIGH_VIS:</strong> Audit pages with high visibility but low CTR for meta-data decay.</li>
+            </ul>
+            <p><strong>Protocol:</strong> Content teams should review the top 50 flagged items monthly. Automated updates should be avoided for high-value brand pages or legal content.</p>
+        </div>
+
+        <h2>7. Reproducibility</h2>
+        <p>The complete analysis, including data aggregation and modeling notebooks, is available in the project repository. All experiments were conducted with a fixed random seed (42) to ensure reproducibility.</p>
+        <p><strong>GitHub Repository:</strong> <a href="https://github.com/FEZEKIL/flyrank-ml-internship">FEZEKIL/flyrank-ml-internship</a></p>
+
+        <div class="footer">
+            <p>Built on the <a href="https://flyrank.ai">FlyRank ML Internship dataset</a>.</p>
+            <p>&copy; 2026 Fezekile Xalaba</p>
+        </div>
+    </div>
+</body>
+</html>
